@@ -1,0 +1,6 @@
+exclude:
+  - LICENSE
+  - .gitattributes
+  - phrase 1
+
+timezone: Asia/Hong_Kong
