@@ -81,7 +81,7 @@ function ierg4210_cat_delete() {
     $q->execute();
 
     // redirect back to original page; you may comment it during debug
-    //header('Location: admin.php');
+    header('Location: admin.php');
     exit();
 }
 

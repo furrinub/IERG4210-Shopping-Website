@@ -40,12 +40,12 @@ layout: default
 		<ul class="p-0">
 			<?php 
 			$prod = ierg4210_prod_fetchAll();
-			$random_index = array_rand($prod, 6);
+			$random_index = count($prod) == 0 ? array() : array_rand($prod, min(count($prod), 6));
 			foreach ($random_index as $i) {
 			?>
 				<li class="w-20 home-item d-inline-block pb-2">
 					<a href="banana.html" class="text-decoration-none text-black">
-						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp">
+						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp" width="160" height="160">
 						<p><?= $prod[$i]['NAME'] ?></p>
 					</a>
 					<hr>
@@ -64,7 +64,7 @@ layout: default
 	<div class="horizontal-product-list overflow-x-scroll">
 		<ul class="p-0">
 			<?php
-			$random_index = array_rand($prod, 6);
+			$random_index = count($prod) == 0 ? array() : array_rand($prod, min(count($prod), 6));
 			foreach ($random_index as $i) {
 			?>
 				<li class="w-20 home-item d-inline-block pb-2">
@@ -88,11 +88,11 @@ layout: default
 	<div class="horizontal-product-list overflow-x-scroll">
 		<ul class="p-0">
 			<?php
-			$random_index = array_rand($prod, 6);
+			$random_index = count($prod) == 0 ? array() : array_rand($prod, min(count($prod), 6));
 			foreach ($random_index as $i) {
 			?>
 				<li class="w-20 home-item d-inline-block pb-2">
-					<a href="banana.html" class="text-decoration-none text-black">
+					<a href="banana.html" class="text-decoration-none text-black" width="160" height="160">
 						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp">
 						<p><?= $prod[$i]['NAME'] ?></p>
 					</a>
