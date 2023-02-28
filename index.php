@@ -30,26 +30,31 @@ layout: default
 	</div>
 </section>
 
-<section id="PathToHere" class="w-90 mx-auto my-4">
-	<h2><a href="index.html" class="text-black">Overview</a></h2>
+<section class="w-90 mx-auto my-4">
+	<h2><a href="#" class="text-black">Overview</a></h2>
 </section>
 
 <section class="text-center mb-4">
 	<h3>What's New</h3>
 	<div class="horizontal-product-list overflow-x-scroll">
 		<ul class="p-0">
-			{% for y in (1..6) -%}
-			<li class="w-20 home-item d-inline-block pb-2">
-				<!-- image from https://www.jiomart.com/p/groceries/apple-shimla-per-kg/590002873 -->
-				<a href="banana.html" class="text-decoration-none text-black">
-					<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Platano_de_canarias.jpg/800px-Platano_de_canarias.jpg" width="160" height="160">
-					<p>Banana</p>
-				</a>
-				<hr>
-				<p class="price">HK$55</p>
-				<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
-			</li>
-			{% endfor %}
+			<?php 
+			$prod = ierg4210_prod_fetchAll();
+			$random_index = array_rand($prod, 6);
+			foreach ($random_index as $i) {
+			?>
+				<li class="w-20 home-item d-inline-block pb-2">
+					<a href="banana.html" class="text-decoration-none text-black">
+						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp">
+						<p><?= $prod[$i]['NAME'] ?></p>
+					</a>
+					<hr>
+					<p class="price">HK$<?= $prod[$i]['PRICE'] ?></p>
+					<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
+				</li>
+			<?php
+			}
+			?>
 		</ul>
 	</div>
 </section>
@@ -58,18 +63,22 @@ layout: default
 	<h3>Hot Sale</h3>
 	<div class="horizontal-product-list overflow-x-scroll">
 		<ul class="p-0">
-			{% for y in (1..6) -%}
-			<li class="w-20 home-item d-inline-block pb-2">
-				<!-- image from https://www.jiomart.com/p/groceries/apple-shimla-per-kg/590002873 -->
-				<a href="apple.html" class="text-decoration-none text-black">
-					<img src="img/product/apple.jpg" width="160" height="160">
-					<p>Apple</p>
-				</a>
-				<hr>
-				<p class="price">HK$1,798</p>
-				<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
-			</li>
-			{% endfor %}
+			<?php
+			$random_index = array_rand($prod, 6);
+			foreach ($random_index as $i) {
+			?>
+				<li class="w-20 home-item d-inline-block pb-2">
+					<a href="prduct.php?pid=<?= $prod[$i]['PID'] ?>" class="text-decoration-none text-black">
+						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp" width="160" height="160">
+						<p><?= $prod[$i]['NAME'] ?></p>
+					</a>
+					<hr>
+					<p class="price">HK$<?= $prod[$i]['PRICE'] ?></p>
+					<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
+				</li>
+			<?php
+			}
+			?>
 		</ul>
 	</div>
 </section>
@@ -78,18 +87,22 @@ layout: default
 	<h3>Special Offers</h3>
 	<div class="horizontal-product-list overflow-x-scroll">
 		<ul class="p-0">
-			{% for y in (1..6) -%}
-			<li class="w-20 home-item d-inline-block pb-2">
-				<!-- image from https://www.jiomart.com/p/groceries/apple-shimla-per-kg/590002873 -->
-				<a href="apple.html" class="text-decoration-none text-black">
-					<img src="img/product/apple.jpg" width="160" height="160">
-					<p>Apple</p>
-				</a>
-				<hr>
-				<p class="price">HK$1,798</p>
-				<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
-			</li>
-			{% endfor %}
+			<?php
+			$random_index = array_rand($prod, 6);
+			foreach ($random_index as $i) {
+			?>
+				<li class="w-20 home-item d-inline-block pb-2">
+					<a href="banana.html" class="text-decoration-none text-black">
+						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp">
+						<p><?= $prod[$i]['NAME'] ?></p>
+					</a>
+					<hr>
+					<p class="price">HK$<?= $prod[$i]['PRICE'] ?></p>
+					<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
+				</li>
+			<?php
+			}
+			?>
 		</ul>
 	</div>
 </section>
