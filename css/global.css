@@ -3,6 +3,15 @@
     font-weight: bold;
 }
 
+footer {
+    position: fixed;
+    bottom: 0;
+}
+
+#padding_for_footer {
+    margin: 8rem 0;
+}
+
 #BannerCarousel {
     background: #287b42;
 }
@@ -19,8 +28,7 @@ h3 {
     width: 90%;
 }
 
-.home-item
-{
+.home-item {
     border: 1px solid black;
     padding: 0;
     min-width: 160px;
@@ -30,23 +38,20 @@ h3 {
     white-space: nowrap;
 }
 
-.add-cart {
+.add-cart, .checkout {
     background: #287b42;
-}
-
-#PathToHere a {
-    color: black;
 }
 
 .product-big-picture {
     border: 1px solid black;
 }
 
-#apple-input-quantity {
-    width: 80px;
+.cart-input-quantity {
+    max-width: 80px;
+    min-width: 40px;
 }
 
-#CartList > div {
+#CartListContainer > div {
     display: none;
     position: absolute;
     overflow: visible;
@@ -54,7 +59,7 @@ h3 {
     border-radius: 5px;
 }
 
-#CartList:hover > div {
+#CartListContainer:hover > div {
     display: block;
 }
 

@@ -34,23 +34,29 @@ layout: default
 	<h2><a href="#" class="text-black">Overview</a></h2>
 </section>
 
+
+<?php 
+$prod = ierg4210_prod_fetchAll();
+$headings = array("What's New", "Hot Sale", "Special Offers");
+foreach ($headings as $h) {
+?>
+
 <section class="text-center mb-4">
-	<h3>What's New</h3>
+	<h3><?= $h ?></h3>
 	<div class="horizontal-product-list overflow-x-scroll">
 		<ul class="p-0">
 			<?php 
-			$prod = ierg4210_prod_fetchAll();
 			$random_index = count($prod) == 0 ? array() : array_rand($prod, min(count($prod), 6));
 			foreach ($random_index as $i) {
 			?>
 				<li class="w-20 home-item d-inline-block pb-2">
-					<a href="banana.html" class="text-decoration-none text-black">
+					<a href="product.php?pid=<?= $prod[$i]['PID'] ?>" class="text-decoration-none text-black">
 						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp" width="160" height="160">
 						<p><?= $prod[$i]['NAME'] ?></p>
 					</a>
 					<hr>
 					<p class="price">HK$<?= $prod[$i]['PRICE'] ?></p>
-					<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
+					<button type="button" class="add-cart" data-pid="<?= $prod[$i]['PID'] ?>"><i class="bi bi-cart"></i> Add to Cart</button>
 				</li>
 			<?php
 			}
@@ -59,50 +65,20 @@ layout: default
 	</div>
 </section>
 
+<?php
+}
+?>
+
+
 <section class="text-center mb-4">
-	<h3>Hot Sale</h3>
-	<div class="horizontal-product-list overflow-x-scroll">
-		<ul class="p-0">
-			<?php
-			$random_index = count($prod) == 0 ? array() : array_rand($prod, min(count($prod), 6));
-			foreach ($random_index as $i) {
-			?>
-				<li class="w-20 home-item d-inline-block pb-2">
-					<a href="prduct.php?pid=<?= $prod[$i]['PID'] ?>" class="text-decoration-none text-black">
-						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp" width="160" height="160">
-						<p><?= $prod[$i]['NAME'] ?></p>
-					</a>
-					<hr>
-					<p class="price">HK$<?= $prod[$i]['PRICE'] ?></p>
-					<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
-				</li>
-			<?php
-			}
-			?>
-		</ul>
+	<h3>More Prodcts</h3>
+	<div class="aaa-horizontal-product-list">
+		<ul id="more_prod_list" class="p-0 row w-90 mx-auto"></ul>
 	</div>
 </section>
 
-<section class="text-center mb-4">
-	<h3>Special Offers</h3>
-	<div class="horizontal-product-list overflow-x-scroll">
-		<ul class="p-0">
-			<?php
-			$random_index = count($prod) == 0 ? array() : array_rand($prod, min(count($prod), 6));
-			foreach ($random_index as $i) {
-			?>
-				<li class="w-20 home-item d-inline-block pb-2">
-					<a href="banana.html" class="text-decoration-none text-black" width="160" height="160">
-						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp">
-						<p><?= $prod[$i]['NAME'] ?></p>
-					</a>
-					<hr>
-					<p class="price">HK$<?= $prod[$i]['PRICE'] ?></p>
-					<button type="button" class="add-cart"><i class="bi bi-cart"></i> Add to Cart</button>
-				</li>
-			<?php
-			}
-			?>
-		</ul>
-	</div>
+<section class="text-center">
+	<img src="./img/loading.svg">
 </section>
+
+<script defer src="./js/inf_scroll.js"></script>

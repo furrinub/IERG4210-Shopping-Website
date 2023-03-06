@@ -3,12 +3,13 @@ layout: default
 ---
 
 <?php
-$pid = $_GET["pid"] ?? 'x';
-if (!valid_int($pid)) {
-	header('Location: admin.php');
+try {
+    $prod = ierg4210_prod_fetchOne();
+} catch (Exception $e) {
+    header('Location: index.php');
     exit();
 }
-$prod = ierg4210_prod_fetchOne($pid);
+
 $quantity_display = (int) $prod['QUANTITY'];
 if ($quantity_display <= 3) $quantity_display = "Only $quantity_display left!";
 ?>
@@ -32,8 +33,8 @@ if ($quantity_display <= 3) $quantity_display = "Only $quantity_display left!";
 			<p class="mb-4">Quantity in Stock: <?= $quantity_display ?></p>
 			<hr class="w-75">
 			<h3 class="price mb-4">HK$<?= $prod['PRICE'] ?></h3>
-			<p class="mb-4">Buy: <input type="number" name="quantity" min="1" max="9999" value="1"></p>
-			<button type="button" class="add-cart p-2"><h4 class="m-0"><i class="bi bi-cart"></i> Add to Cart</h4></button>
+			<p class="mb-4">Buy: <input type="number" name="quantity" id="buy_quantity" min="1" max="9999" value="1"></p>
+			<button type="button" class="add-cart p-2" data-pid="<?= $prod['PID'] ?>"><h4 class="m-0"><i class="bi bi-cart"></i> Add to Cart</h4></button>
 		</div>
 	</div>
 </section>

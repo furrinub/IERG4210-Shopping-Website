@@ -244,18 +244,31 @@ function ierg4210_prod_fetchAll() {
         return $q->fetchAll();
 }
 
-function ierg4210_prod_fetchOne($pid) {
+function ierg4210_prod_fetchOne() {
     // DB manipulation
     global $db;
     $db = ierg4210_DB();
 
-    $pid = (int) $pid;
+    $pid = $_GET["pid"] ?? 'x';
+    if (!valid_int($pid))
+        throw new Exception("invalid-pid");
 
     $sql = "SELECT * FROM PRODUCTS WHERE PID = ?;";
     $q = $db->prepare($sql);
     $q->bindParam(1, $pid);
     if ($q->execute())
         return $q->fetch();
+}
+
+function ierg4210_prod_fetchThreeRandom() {
+    $prod = ierg4210_prod_fetchAll();
+    $random_index = count($prod) == 0 ? array() : array_rand($prod, min(count($prod), 4));
+
+    $res = array();
+    foreach ($random_index as $i) {
+        array_push($res, $prod[$i]);
+    }
+    return $res;
 }
 
 // not really text
