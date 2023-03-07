@@ -38,7 +38,7 @@ function set_cart_display() {
                         <input type="number" name="quantity" min="1" max="${prod['QUANTITY']}" value="${cart[pid]}" class="cart-input-quantity mx-3 col-3">
                     </div>
                 </li>`
-                total_price += parseFloat(prod['PRICE'])
+                total_price += parseFloat(prod['PRICE']) * cart[pid]
                 break
             }
         }
@@ -56,7 +56,8 @@ function set_cart_display() {
             let pid = i.parentElement.dataset.pid
             cart[pid] = parseInt(i.value)
             localStorage.cart = JSON.stringify(cart)
-            // no need set display
+            // need to update price
+            set_cart_display()
         }
     }
 

@@ -12,6 +12,10 @@ footer {
     margin: 8rem 0;
 }
 
+.cart-del-btn {
+    cursor: pointer;
+}
+
 #BannerCarousel {
     background: #287b42;
 }
