@@ -11,7 +11,7 @@ if ($cid > count($cats))
 ?>
 
 <section class="w-90 mx-auto my-4">
-	<h2><a href="index.php" class="text-black">Overview</a> > <a href="#" class="text-black"><?php echo find_name_by_cid($cats, $cid); ?></a></h2>
+	<h2><a href="index.php" class="text-black">Overview</a> > <a href="#" class="text-black"><?= htmlspecialchars(find_name_by_cid($cats, $cid)) ?></a></h2>
 </section>
 <section class="text-center mb-4">
 	<div class="row mx-auto text-center product-box">

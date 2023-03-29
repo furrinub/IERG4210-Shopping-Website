@@ -29,7 +29,9 @@ drag and drop:
 <?php 
 $cidOptions = '';
 foreach ($cats as $value) {
-	$cidOptions .= "<option value=\"$value[CID]\">{htmlspecialchars($value['NAME'])}</option>";
+	// cannot directly call function in string interpolation
+	$escapedName = htmlspecialchars($value['NAME']);
+	$cidOptions .= "<option value=\"$value[CID]\">$escapedName</option>";
 }
 ?>
 <section class="row mx-auto text-center">
@@ -54,11 +56,12 @@ foreach ($cats as $value) {
 				</tr>
 				<?php 
 				foreach ($cats as $value) {
+					$escapedName = htmlspecialchars($value['NAME']);
 					$catRow = "<tr class=\"cat-row\">
 					<td><button><i class=\"bi bi-trash-fill\"></i></button></td>
 					<td><button><i class=\"bi bi-pencil-fill\"></i></button></td>
-					<td>{$value['CID']}</td>
-					<td>{htmlspecialchars($value['NAME'])}</td>
+					<td>$value[CID]</td>
+					<td>$escapedName</td>
 					</tr>";
 					echo $catRow;
 				}
@@ -93,7 +96,8 @@ foreach ($cats as $value) {
 			$pidOptions = '';
 
 			foreach ($prods as $value) {
-				$pidOptions .= "<option value=\"$value[PID]\">{htmlspecialchars($value['NAME'])}</option>";
+				$escapedName = htmlspecialchars($value['NAME']);
+				$pidOptions .= "<option value=\"$value[PID]\">$escapedName</option>";
 			}
 		?>
 			<h3 class="my-4 text-start">Products</h3>
@@ -112,15 +116,17 @@ foreach ($cats as $value) {
 				<?php
 				foreach ($prods as $value) {
 					$cat_name = find_name_by_cid($cats, $value['CID']);
+					$escapedName = htmlspecialchars($value['NAME']);
+					$escapedDesc = htmlspecialchars($value['DESCRIPTION']);
 					$productRow = "<tr class=\"prod-row\">
 					<td><button><i class=\"bi bi-trash-fill\"></i></button></td>
 					<td><button><i class=\"bi bi-pencil-fill\"></i></button></td>
 					<td>$value[PID]</td>
 					<td data-cid=\"$value[CID]\">$cat_name</td>
-					<td>{htmlspecialchars($value['NAME'])}</td>
+					<td>$escapedName</td>
 					<td>$value[PRICE]</td>
 					<td>$value[QUANTITY]</td>
-					<td>{htmlspecialchars($value['DESCRIPTION'])}</td>
+					<td>$escapedDesc</td>
 					</tr>";
 					echo $productRow;
 				}
