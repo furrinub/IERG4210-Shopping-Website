@@ -18,7 +18,7 @@ if ($quantity_display <= 3) $quantity_display = "Only $quantity_display left!";
 	<h2>
 		<a href="index.php" class="text-black">Overview</a> > 
 		<a href="category.php?cid=<?= $prod['CID'] ?>" class="text-black"><?= find_name_by_cid($cats, $prod['CID']); ?></a> > 
-		<a href="#" class="text-black"><?= $prod['NAME'] ?></a>
+		<a href="#" class="text-black"><?= htmlspecialchars($prod['NAME']) ?></a>
 	</h2>
 </section>
 <section class="mb-4 mx-auto w-90">
@@ -28,8 +28,8 @@ if ($quantity_display <= 3) $quantity_display = "Only $quantity_display left!";
 		</div>
 		<div class="col-1"></div>
 		<div class="col-6">
-			<h3><?= $prod['NAME'] ?></h3>
-			<p><?= $prod['DESCRIPTION'] ?></p>
+			<h3><?= htmlspecialchars($prod['NAME']) ?></h3>
+			<p><?= htmlspecialchars($prod['DESCRIPTION']) ?></p>
 			<p class="mb-4">Quantity in Stock: <?= $quantity_display ?></p>
 			<hr class="w-75">
 			<h3 class="price mb-4">HK$<?= $prod['PRICE'] ?></h3>

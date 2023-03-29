@@ -21,7 +21,7 @@ if ($cid > count($cats))
 			<div class="col-5 col-md-3 px-0 mb-4 text-center">
 				<a href="product.php?pid=<?= $prod['PID'] ?>" class="text-decoration-none text-black">
 					<img src="product_images/thumbnails/<?= $prod['PID'] ?>.webp" alt="product image" width="160" height="160">
-					<p><?= $prod['NAME'] ?></p>
+					<p><?= htmlspecialchars($prod['NAME']) ?></p>
 				</a>
 				<hr class="w-75 mx-auto">
 				<p class="price">HK$<?= $prod['PRICE'] ?></p>

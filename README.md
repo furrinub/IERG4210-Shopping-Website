@@ -18,3 +18,15 @@
  Fixed a lot of bugs.
  Implement infinite scroll.
  Shopping cart is now working.
+
+# Phrase 4
+ Fixed add-to-cart bugs in infinite scroll.
+ Add nonces to forms.
+ Use DB to store accounts.
+ Use cookie to store auth token.
+ Now only admin can edit the database through the webpages.
+ All connections are forced to be HTTPS.
+ Admin email: s46@ie.cuhk
+ Password: ierg4210
+ User: test@ie.cuhk
+ Password: ierg4210

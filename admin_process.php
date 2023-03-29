@@ -1,5 +1,6 @@
 <?php
 include_once('lib/db.inc.php');
+include_once('lib/auth.inc.php');
 
 header('Content-Type: application/json');
 
@@ -7,6 +8,26 @@ header('Content-Type: application/json');
 if (empty($_REQUEST['action']) || !preg_match('/^\w+$/', $_REQUEST['action'])) {
 	echo json_encode(array('failed'=>'undefined'));
 	exit();
+}
+
+// all fetch action does not need nonce and auth. The actions do not edit anything. Otherwise js cant fetch info to be displayed in index.php.
+$fetch_action_type = array('prod_fetchThreeRandom', 'prod_fetch_by_cid', 'prod_fetchAll', 'prod_fetchOne', 'cat_fetchAll');
+if (!in_array($_REQUEST['action'], $fetch_action_type) && !csrf_verifyNonce($_REQUEST['action'], $_POST['nonce'])) {
+    header('Location: admin.php', true, 302);
+    exit();
+}
+
+if (!in_array($_REQUEST['action'], $fetch_action_type)) {
+	// if havent log in
+	if (!($auth_info = auth())) {
+		header('Location: login.php', true, 302);
+		exit();
+	}
+	// if user is not admin
+	if (!$auth_info[1]) {
+		header('Location: index.php', true, 302);
+		exit();
+	}
 }
 
 // The following calls the appropriate function based to the request parameter $_REQUEST['action'],

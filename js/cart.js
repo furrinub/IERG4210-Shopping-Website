@@ -81,17 +81,20 @@ let cart = JSON.parse(localStorage.cart) // {str: int}
 fetch_info().then(set_cart_display)
 
 // add to cart function
-for (const elem of document.getElementsByClassName('add-cart')) {
-    elem.onclick = (e) => {
-        let pid = e.currentTarget.dataset.pid
-        let buy_count = buy_count_elem ? parseInt(buy_count_elem.value) : 1;
-        if (pid in cart) {
-            cart[pid] += buy_count
-        } else {
-            cart[pid] = buy_count
+function set_add_cart_onclick() {
+    for (const elem of document.getElementsByClassName('add-cart')) {
+        elem.onclick = (e) => {
+            let pid = e.currentTarget.dataset.pid
+            let buy_count = buy_count_elem ? parseInt(buy_count_elem.value) : 1;
+            if (pid in cart) {
+                cart[pid] += buy_count
+            } else {
+                cart[pid] = buy_count
+            }
+            localStorage.cart = JSON.stringify(cart)
+            set_cart_display()
         }
-        localStorage.cart = JSON.stringify(cart)
-        set_cart_display()
     }
 }
 
+set_add_cart_onclick()

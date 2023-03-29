@@ -2,10 +2,16 @@
 ---
 <?php
 session_start();
+include_once('lib/auth.inc.php');
 
-// check login info
-if (!isset($_SESSION['isadmin']) || !$_SESSION['isadmin']) {
-	header('Location: admin_login.php');
+// if havent log in
+if (!($auth_info = auth())) {
+	header('Location: login.php', true, 302);
+	exit();
+}
+// if user is not admin
+if (!$auth_info[1]) {
+	header('Location: index.php', true, 302);
 	exit();
 }
 ?>
@@ -23,15 +29,14 @@ drag and drop:
 <?php 
 $cidOptions = '';
 foreach ($cats as $value) {
-	$cidOptions .= "<option value=\"$value[CID]\">$value[NAME]</option>";
+	$cidOptions .= "<option value=\"$value[CID]\">{htmlspecialchars($value['NAME'])}</option>";
 }
 ?>
 <section class="row mx-auto text-center">
 	<div class="col-3 px-0 admin-nav">
 		<ul class="nav flex-column">
-			<li class="nav-item py-2"><a href="admin.php?page=category" class="nav-link text-black">Categories</a></li>
-			<li class="nav-item py-2"><a href="admin.php?page=product" class="nav-link text-black">Products</a></li>
-			<li class="nav-item py-2"><a href="admin_login.php?logout=1" class="nav-link text-black">Logout</a></li>
+			<li class="nav-item"><a href="admin.php?page=category" class="nav-link text-black py-3">Categories</a></li>
+			<li class="nav-item"><a href="admin.php?page=product" class="nav-link text-black py-3">Products</a></li>
 		</ul>
 	</div>
 	<div class="col px-4">
@@ -52,8 +57,8 @@ foreach ($cats as $value) {
 					$catRow = "<tr class=\"cat-row\">
 					<td><button><i class=\"bi bi-trash-fill\"></i></button></td>
 					<td><button><i class=\"bi bi-pencil-fill\"></i></button></td>
-					<td>$value[CID]</td>
-					<td>$value[NAME]</td>
+					<td>{$value['CID']}</td>
+					<td>{htmlspecialchars($value['NAME'])}</td>
 					</tr>";
 					echo $catRow;
 				}
@@ -64,6 +69,7 @@ foreach ($cats as $value) {
 				<form method="POST" id="cat_insert" action="admin_process.php?action=cat_insert">
 					<input id="cat_add_name" class="m-3" type="text" name="name" required pattern="^[\w\- ]+$" placeholder="Enter Category Name" />
 					<input type="submit" value="Add" />
+					<input type="hidden" name="nonce" value="<?= csrf_getNonce('cat_insert') ?>" />
 				</form>
 			</fieldset>
 			<fieldset class="px-4 text-start w-75 mb-4 d-none">
@@ -72,10 +78,12 @@ foreach ($cats as $value) {
 					<select id="cat_edit_cid" class="mb-3 d-block" name="cid"><?= $cidOptions ?></select>
 					<input id="cat_edit_name" class="mb-3" type="text" name="name" required pattern="^[\w\- ]+$" placeholder="Enter Category Name" />
 					<input type="submit" value="Edit" />
+					<input type="hidden" name="nonce" value="<?= csrf_getNonce('cat_edit') ?>" />
 				</form>
 			</fieldset>
 			<form method="POST" id="cat_del" class="d-none" action="admin_process.php?action=cat_delete">	
 				<input type="hidden" name="cid" value="0" required />
+				<input type="hidden" name="nonce" value="<?= csrf_getNonce('cat_delete') ?>" />
 			</form>
 		<?php
 		} elseif ($dstpage == "product") {
@@ -85,7 +93,7 @@ foreach ($cats as $value) {
 			$pidOptions = '';
 
 			foreach ($prods as $value) {
-				$pidOptions .= "<option value=\"$value[PID]\">$value[NAME]</option>";
+				$pidOptions .= "<option value=\"$value[PID]\">{htmlspecialchars($value['NAME'])}</option>";
 			}
 		?>
 			<h3 class="my-4 text-start">Products</h3>
@@ -109,10 +117,10 @@ foreach ($cats as $value) {
 					<td><button><i class=\"bi bi-pencil-fill\"></i></button></td>
 					<td>$value[PID]</td>
 					<td data-cid=\"$value[CID]\">$cat_name</td>
-					<td>$value[NAME]</td>
+					<td>{htmlspecialchars($value['NAME'])}</td>
 					<td>$value[PRICE]</td>
 					<td>$value[QUANTITY]</td>
-					<td>$value[DESCRIPTION]</td>
+					<td>{htmlspecialchars($value['DESCRIPTION'])}</td>
 					</tr>";
 					echo $productRow;
 				}
@@ -144,6 +152,7 @@ foreach ($cats as $value) {
 						<img class="preview-thumbnail mb-3 d-none" width="160" height="160">
 					</div>
 					<input class="mb-3" type="submit" value="Add"/>
+					<input type="hidden" name="nonce" value="<?= csrf_getNonce('prod_insert') ?>" />
 				</form>
 			</fieldset>
 
@@ -174,11 +183,13 @@ foreach ($cats as $value) {
 						<img class="preview-thumbnail mb-3 d-none" width="160" height="160">
 					</div>
 					<input class="mb-3" type="submit" value="Edit"/>
+					<input type="hidden" name="nonce" value="<?= csrf_getNonce('prod_edit') ?>" />
 				</form>
 			</fieldset>
 
 			<form method="POST" id="prod_del" class="d-none" action="admin_process.php?action=prod_delete">	
 				<input type="hidden" name="pid" value="0" required />
+				<input type="hidden" name="nonce" value="<?= csrf_getNonce('prod_delete') ?>" />
 			</form>
 		<?php
 		} else {
@@ -186,8 +197,9 @@ foreach ($cats as $value) {
 		}
 		?>
 	</div>
-	
 </section>
+
+
 <script src="js/admin.js" defer></script>
 {% endcapture %}
 

@@ -52,7 +52,7 @@ foreach ($headings as $h) {
 				<li class="w-20 home-item d-inline-block pb-2">
 					<a href="product.php?pid=<?= $prod[$i]['PID'] ?>" class="text-decoration-none text-black">
 						<img src="product_images/thumbnails/<?= $prod[$i]['PID'] ?>.webp" width="160" height="160">
-						<p><?= $prod[$i]['NAME'] ?></p>
+						<p><?= htmlspecialchars($prod[$i]['NAME']) ?></p>
 					</a>
 					<hr>
 					<p class="price">HK$<?= $prod[$i]['PRICE'] ?></p>
@@ -80,5 +80,9 @@ foreach ($headings as $h) {
 <section class="text-center">
 	<img src="./img/loading.svg">
 </section>
-
+<!--
+<div class="permission-denied w-100 fixed-bottom">
+	<p class="alert-text text-center">You do not have permission to access admin panel.</p>
+</div>
+-->
 <script defer src="./js/inf_scroll.js"></script>

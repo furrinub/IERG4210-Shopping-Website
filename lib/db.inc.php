@@ -1,4 +1,13 @@
 <?php
+/*
+https://blog.csdn.net/weixin_33953384/article/details/92013600
+wasted many hours to debug!!!!!!!
+need to give permission to apache for 
+1. the folder of db
+2. db file
+3. the code (php files)
+*/
+
 function ierg4210_DB() {
 	// connect to the database
 	// TODO: change the following path if needed
@@ -15,6 +24,9 @@ function ierg4210_DB() {
 	// the same name, PDO::FETCH_ASSOC returns only a single value
 	// per column name.
 	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+    // show warning message if any db errors occur
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
 	return $db;
 }
@@ -37,7 +49,7 @@ function ierg4210_cat_insert() {
     $q->execute();
 
     // redirect back to original page; you may comment it during debug
-    header('Location: admin.php');
+    header('Location: admin.php', true, 302);
     exit();
 }
 
@@ -60,7 +72,7 @@ function ierg4210_cat_edit() {
     $q->execute(array($name, $cid));
 
     // redirect back to original page; you may comment it during debug
-    header('Location: admin.php');
+    header('Location: admin.php', true, 302);
     exit();
 }
 
@@ -81,7 +93,7 @@ function ierg4210_cat_delete() {
     $q->execute();
 
     // redirect back to original page; you may comment it during debug
-    header('Location: admin.php');
+    header('Location: admin.php', true, 302);
     exit();
 }
 
@@ -134,7 +146,7 @@ function ierg4210_prod_insert() {
 
         // save img
         create_image_and_thumbnail($_FILES["file"]["tmp_name"], $lastId);
-        header('Location: admin.php');
+        header('Location: admin.php', true, 302);
         exit();
     }
 
@@ -188,7 +200,7 @@ function ierg4210_prod_edit() {
         
         // save img
         create_image_and_thumbnail($_FILES["file"]["tmp_name"], $pid);
-        header('Location: admin.php');
+        header('Location: admin.php', true, 302);
         exit();
     }
 
@@ -217,7 +229,7 @@ function ierg4210_prod_delete() {
     $q->execute();
 
     // redirect back to original page; you may comment it during debug
-    header('Location: admin.php');
+    header('Location: admin.php', true, 302);
     exit();
 }
 

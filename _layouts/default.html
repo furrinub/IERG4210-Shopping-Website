@@ -1,3 +1,6 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) session_start(); // creates a session if not exist
+?>
 <!doctype html>
 <html>
 <head>
@@ -12,6 +15,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 
 	<link rel="stylesheet" href="css/global.css">
+	<!-- https://gist.github.com/jakub-g/385ee6b41085303a53ad92c7c8afd7a6 -->
 	<script defer src="./js/cart.js"></script>
 </head>
 <body>
@@ -58,9 +62,50 @@
 						</div>
 					</li>
 					
+					<!-- account name-->
+					<li class="nav-item mx-auto p-2">
+						<span class="nav-link text-info">
+							<?php
+							include_once('lib/auth.inc.php');
+							if (!($auth_info = auth())) {
+								echo "Guest";
+							} else {
+								echo $auth_info[0];
+							}
+							?>
+						</span>
+					</li>
+
+					<li class="nav-item mx-auto p-2">
+						<a href="change_password.php" class="nav-link text-info">Change Password</a>
+					</li>
+
+					<li class="nav-item mx-auto p-2">
+						<?php
+							if ($auth_info) {
+						?>
+						<button type="submit" form="logout_form" class="nav-link text-info bg-transparent border-0">Logout</button>
+						<?php
+							} else {
+						?>
+						<a class="nav-link text-info" href="login.php">Login</a>
+						<?php
+							}
+						?>
+					</li>
 				</ul>
 			</div>
 		</nav>
+		<?php
+			if ($auth_info) {
+		?>
+		<!-- logout form -->
+		<form id="logout_form" name="logout_form" class="d-none" method="POST" action="login_process.php?action=logout">
+			<input type="hidden" name="nonce" value="<?= csrf_getNonce('logout') ?>" />
+		</form>
+		<?php
+			}
+		?>
 	</header>
 
 	<!-- shopping list offcanvas
@@ -87,6 +132,7 @@
 {% for line in AllContentLines %}	{{line}}
 {% endfor %}
 
+	<div id="bottom_page_padding"></div>
 	<footer class="py-3 bg-dark text-center text-light w-100">
 		<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><i class="bi bi-instagram text-warning"></i></a> &nbsp;
 		<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><i class="bi bi-facebook"></i></a> &nbsp;

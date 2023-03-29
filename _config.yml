@@ -1,8 +1,10 @@
 exclude:
   - LICENSE
   - .gitattributes
-  - phrase 1
-  - phrase 2
-  - phrase 3
+  - phase 1
+  - phase 2
+  - phase 3
+  - phase 4
+  - phase 5
 
 timezone: Asia/Hong_Kong

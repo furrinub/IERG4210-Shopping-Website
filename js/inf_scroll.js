@@ -13,6 +13,7 @@ async function load_more() {
     if (body.startsWith(PREFIX)) {
         body = body.slice(PREFIX.length);
     }
+    //console.log(body)
     let prods = JSON.parse(body).success
 
     let html = ''
@@ -30,6 +31,8 @@ async function load_more() {
     }
 
     more_prod_list.innerHTML += html
+
+    set_add_cart_onclick() // function from cart.js; set onclick function for every add-cart button
 }
 
 
