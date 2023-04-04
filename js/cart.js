@@ -22,13 +22,13 @@ async function fetch_info() {
 
 // set name and price of products in cart
 // info is sorted by pid but some pid may be missing
-function set_cart_display() {
+function render_cart() {
     let html = ''
     let total_price = 0
     let item_count = 0
     for (const pid of Object.keys(cart)) {
         for (const prod of info) {
-            if (prod['PID'] == pid) {
+            if (prod['PID'] === pid) {
                 html += `
                 <li class="list-group-item">
                     <div class="row align-items-center" data-pid="${prod['PID']}">
@@ -57,7 +57,7 @@ function set_cart_display() {
             cart[pid] = parseInt(i.value)
             localStorage.cart = JSON.stringify(cart)
             // need to update price
-            set_cart_display()
+            render_cart()
         }
     }
 
@@ -67,18 +67,28 @@ function set_cart_display() {
             let pid = e.currentTarget.parentElement.dataset.pid
             delete cart[pid]
             localStorage.cart = JSON.stringify(cart)
-            set_cart_display()
+            render_cart()
         }
     }
 }
 
-
-
-if (!('cart' in localStorage)) {
+// delete all items in cart. This function is for paypal.
+function clear_cart() {
     localStorage.cart = '{}'
+    cart = {}
+    render_cart()
 }
-let cart = JSON.parse(localStorage.cart) // {str: int}
-fetch_info().then(set_cart_display)
+
+// convert cart into [{pid: 1, quantity: 10}, ...]
+// This function is for paypal
+function get_cart_array() {
+    return [ ... Object.keys(cart).map(pid => {
+        return {
+            'pid': parseInt(pid),
+            'quantity': cart[pid]
+        }
+    })]
+}
 
 // add to cart function
 function set_add_cart_onclick() {
@@ -92,9 +102,19 @@ function set_add_cart_onclick() {
                 cart[pid] = buy_count
             }
             localStorage.cart = JSON.stringify(cart)
-            set_cart_display()
+            render_cart()
         }
     }
 }
 
+if (!('cart' in localStorage)) {
+    localStorage.cart = '{}'
+}
+let cart = JSON.parse(localStorage.cart) // {pid (str): quantity (int)}
+fetch_info().then(render_cart)
 set_add_cart_onclick()
+
+
+
+
+

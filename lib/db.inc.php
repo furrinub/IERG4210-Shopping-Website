@@ -31,8 +31,8 @@ function ierg4210_DB() {
 	return $db;
 }
 
+/* ===== DB Category Function ===== */
 
-// TODO: add other functions here to make the whole application complete
 function ierg4210_cat_insert() {
     // DB manipulation
     global $db;
@@ -106,6 +106,8 @@ function ierg4210_cat_fetchAll() {
         return $q->fetchAll();
 }
 
+/* ===== DB Product Function ===== */
+
 // Since this form will take file upload, we use the tranditional (simpler) rather than AJAX form submission.
 // Therefore, after handling the request (DB insert and file copy), this function then redirects back to admin.html
 function ierg4210_prod_insert() {
@@ -132,11 +134,11 @@ function ierg4210_prod_insert() {
 
     // Copy the uploaded file to a folder which can be publicly accessible at incl/img/[pid].jpg
     $mime_type = mime_content_type($_FILES["file"]["tmp_name"]);
-    if ($_FILES["file"]["error"] == 0
-        && $_FILES["file"]["type"] == $mime_type
-        && ($mime_type == "image/jpeg"
-            || $mime_type == "image/png"
-            || $mime_type == "image/gif")
+    if ($_FILES["file"]["error"] === 0
+        && $_FILES["file"]["type"] === $mime_type
+        && ($mime_type === "image/jpeg"
+            || $mime_type === "image/png"
+            || $mime_type === "image/gif")
         && $_FILES["file"]["size"] <= 5*1024*1024) {
 
         $sql = "INSERT INTO PRODUCTS (CID, NAME, PRICE, QUANTITY, DESCRIPTION) VALUES (?, ?, ?, ?, ?);";
@@ -186,11 +188,11 @@ function ierg4210_prod_edit() {
 
     // Copy the uploaded file to a folder which can be publicly accessible at incl/img/[pid].jpg
     $mime_type = mime_content_type($_FILES["file"]["tmp_name"]);
-    if ($_FILES["file"]["error"] == 0
-        && $_FILES["file"]["type"] == $mime_type
-        && ($mime_type == "image/jpeg"
-            || $mime_type == "image/png"
-            || $mime_type == "image/gif")
+    if ($_FILES["file"]["error"] === 0
+        && $_FILES["file"]["type"] === $mime_type
+        && ($mime_type === "image/jpeg"
+            || $mime_type === "image/png"
+            || $mime_type === "image/gif")
         && $_FILES["file"]["size"] <= 5*1024*1024) {
 
         // run sql
@@ -233,12 +235,14 @@ function ierg4210_prod_delete() {
     exit();
 }
 
-function ierg4210_prod_fetch_by_cid($cid) {
+function ierg4210_prod_fetch_by_cid($cid=null) {
     // DB manipulation
     global $db;
     $db = ierg4210_DB();
 
-    $cid = (int) $cid;
+    $cid = $cid ?? $_GET["cid"] ?? 'x';
+    if (!valid_int($cid))
+        throw new Exception("invalid-pid");
 
     $sql = "SELECT * FROM PRODUCTS WHERE CID = ?;";
     $q = $db->prepare($sql);
@@ -256,12 +260,12 @@ function ierg4210_prod_fetchAll() {
         return $q->fetchAll();
 }
 
-function ierg4210_prod_fetchOne() {
+function ierg4210_prod_fetchOne($pid=null) {
     // DB manipulation
     global $db;
     $db = ierg4210_DB();
 
-    $pid = $_GET["pid"] ?? 'x';
+    $pid = $pid ?? $_GET["pid"] ?? 'x';
     if (!valid_int($pid))
         throw new Exception("invalid-pid");
 
@@ -283,6 +287,70 @@ function ierg4210_prod_fetchThreeRandom() {
     return $res;
 }
 
+/* ===== DB Order Function ===== */
+
+function order_insert($email, $invoiceId, $completeTime, $status, $totalPrice, $itemCount, $itemJson) {
+    global $db;
+    $db = ierg4210_DB();
+
+    if ($email !== 'guest' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new Exception("invalid-email");
+    }
+    if (!valid_uuidv4($invoiceId)) {
+        throw new Exception("invalid-uuid");
+    }
+    if (!valid_int($completeTime)) {
+        throw new Exception("invalid-time");
+    }
+    if (!valid_float($totalPrice)) {
+        throw new Exception("invalid-price");
+    }
+    if (!valid_int($itemCount)) {
+        throw new Exception("invalid-count");
+    }
+    if (!valid_json($itemJson)) {
+        throw new Exception("invalid-json");
+    }
+
+    $q = $db->prepare("INSERT INTO orders (EMAIL, INVOICE_ID, COMPLETE_TIME, ORDER_STATUS, TOTAL_PRICE, ITEM_COUNT, ITEMS) VALUES (?, ?, ?, ?, ?, ?, ?);");
+    return $q->execute(array($email, $invoiceId, $completeTime, $status, $totalPrice, $itemCount, $itemJson));
+}
+
+function order_fetchAll() {
+    global $db;
+    $db = ierg4210_DB();
+    $q = $db->prepare("SELECT * FROM orders ORDER BY COMPLETE_TIME ASC;");
+    if ($q->execute())
+        return $q->fetchAll();
+}
+
+function order_fetchOne($transcationId) {
+    global $db;
+    $db = ierg4210_DB();
+
+    if (!valid_int($transcationId)) {
+        throw new Exception("invalid transaction id");
+    }
+
+    $q = $db->prepare("SELECT * FROM orders WHERE TRANSACTION_ID = ?;");
+    if ($q->execute(array($transcationId)))
+        return $q->fetch();
+}
+
+function order_fetch_by_email($email) {
+    global $db;
+    $db = ierg4210_DB();
+
+    if ($email !== 'guest' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new Exception("invalid-email");
+    }
+
+    $q = $db->prepare("SELECT * FROM orders WHERE EMAIL = ? ORDER BY COMPLETE_TIME ASC LIMIT 5;");
+    if ($q->execute(array($email)))
+        return $q->fetchAll();
+}
+
+
 // not really text
 function valid_text($v) {
     return preg_match('/^[\w\s\-_!?.,()]+$/', $v);
@@ -290,12 +358,22 @@ function valid_text($v) {
 
 // not really int
 function valid_int($v) {
-    return preg_match('/^\d*$/', $v);
+    return is_int($v) || preg_match('/^\d*$/', $v);
 }
 
 // not really float
 function valid_float($v) {
-    return preg_match('/^[\d\.]+$/', $v);
+    return preg_match('/^[\d\.]+$/', strval($v));
+}
+
+// https://www.geeksforgeeks.org/how-to-validate-json-in-php/
+function valid_json($v) {
+    return !empty($v) && is_string($v) && is_array(json_decode($v, true));
+}
+
+// https://stackoverflow.com/questions/12808597/php-verify-valid-uuid
+function valid_uuidv4($v) {
+    return is_string($v) && preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $v);
 }
 
 function create_image_and_thumbnail($file, $pid) {

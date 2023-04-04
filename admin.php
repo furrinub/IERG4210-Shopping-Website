@@ -37,14 +37,15 @@ foreach ($cats as $value) {
 <section class="row mx-auto text-center">
 	<div class="col-3 px-0 admin-nav">
 		<ul class="nav flex-column">
+			<li class="nav-item"><a href="admin.php?page=order" class="nav-link text-black py-3">Orders</a></li>
 			<li class="nav-item"><a href="admin.php?page=category" class="nav-link text-black py-3">Categories</a></li>
 			<li class="nav-item"><a href="admin.php?page=product" class="nav-link text-black py-3">Products</a></li>
 		</ul>
 	</div>
 	<div class="col px-4">
 		<?php
-		$dstpage = $_GET["page"] ?? "";
-		if ($dstpage == "category") {
+		$dstpage = $_GET["page"] ?? "order";
+		if ($dstpage === "category") {
 		?>
 			<h3 class="my-4 text-start">Categories</h3>
 			<table class="db-table mb-4">
@@ -89,7 +90,7 @@ foreach ($cats as $value) {
 				<input type="hidden" name="nonce" value="<?= csrf_getNonce('cat_delete') ?>" />
 			</form>
 		<?php
-		} elseif ($dstpage == "product") {
+		} elseif ($dstpage === "product") {
 			// get db data
 			
 			$prods = ierg4210_prod_fetchAll();
@@ -199,7 +200,40 @@ foreach ($cats as $value) {
 			</form>
 		<?php
 		} else {
-			echo "<h2 class=\"text-start my-4\">Welcome to Admin Page</h2>";
+		?>
+			<h3 class="my-4 text-start">Orders</h3>
+			<table class="db-table mb-4">
+				<tr>
+					<th>Invoice ID</th>
+					<th>Date</th>
+					<th>Status</th>
+					<th>Item Count</th>
+					<th>Total Price</th>
+					<th>Details</th>
+				</tr>
+				<?php
+                $orders = order_fetchAll();
+				foreach ($orders as $order) {
+					$date = new DateTime();
+					$date->setTimestamp(intval($order['COMPLETE_TIME']));
+					$date->setTimezone(new DateTimeZone('Asia/Hong_Kong'));
+					$datestr = $date->format('Y/m/d H:i:s');
+
+					$escapedData = [$order['INVOICE_ID'], $datestr, $order['ORDER_STATUS'], $order['ITEM_COUNT'], $order['TOTAL_PRICE']];
+					$escapedData = array_map(function($v) {return htmlspecialchars(strval($v));}, $escapedData);
+					$escapedTransactionId = urlencode($order['TRANSACTION_ID']);
+					echo "<tr>
+					<td>$escapedData[0]</td>
+					<td>$escapedData[1]</td>
+					<td>$escapedData[2]</td>
+					<td>$escapedData[3]</td>
+					<td>$escapedData[4]</td>
+					<td><a href=\"order_details.php?id=$escapedTransactionId\">More Details</a></td>
+					</tr>";
+				}
+				?>
+			</table>
+		<?php
 		}
 		?>
 	</div>

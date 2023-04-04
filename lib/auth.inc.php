@@ -105,7 +105,7 @@ function ierg4210_change_password() {
         exit();
     }
     // check if old and new pw is the same. do not need to hash becuz both are user input
-    if ($old_pwd == $new_pwd_1) {
+    if ($old_pwd === $new_pwd_1) {
         // pw not change
         header('Location: change_password.php?same_pw=1', true, 302);
         exit();
@@ -180,7 +180,7 @@ function auth() {
         $q->execute(array($t['email']));
         if ($res = $q->fetch()) {
             $realk = hash_hmac('sha256', $t['expire'] . $res['PASSWORD'], $res['SALT']);
-            if ($realk == $t['k']){
+            if ($realk === $t['k']){
                 $_SESSION['auth'] = $t;
                 // dont use $t['admin']. Otherwise normal user can change the cookie to gain admin permission
                 return array($res['EMAIL'], $res['ADMIN']);
@@ -192,7 +192,7 @@ function auth() {
 
 function csrf_getNonce($action) {
     // random_int - cryptographically secure, uniformly selected integer
-    $nonce = random_int(0, 4294967295) . random_int(0, 4294967295) . random_int(0, 4294967295) . random_int(0, 4294967295); // 4 x 32bit 
+    $nonce = bin2hex(random_bytes(128)); // 128 bytes to hex = 256 chars
     if (!isset($_SESSION['csrf_nonce']))
         $_SESSION['csrf_nonce'] = array();
     $_SESSION['csrf_nonce'][$action] = $nonce;
@@ -200,7 +200,7 @@ function csrf_getNonce($action) {
 }
 
 function csrf_verifyNonce($action, $receive) {
-    if (isset($receive) && isset($_SESSION['csrf_nonce']) && $_SESSION['csrf_nonce'][$action] == $receive) {
+    if (isset($receive) && ($_SESSION['csrf_nonce'][$action] ?? null) === $receive) {
         unset($_SESSION['csrf_nonce'][$action]);
         return true;
     }
