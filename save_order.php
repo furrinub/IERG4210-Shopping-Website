@@ -13,7 +13,7 @@ include_once('lib/db.inc.php');
 function save_order($order) {
     /* @TODO Comment out the current return statement */
     /* ========== REGION START ========== */
-    file_put_contents("order.json", json_encode($order, JSON_PRETTY_PRINT));
+    //file_put_contents("order.json", json_encode($order, JSON_PRETTY_PRINT));
     //echo json_encode($order);
     /* ========== REGION END ========== */
     
@@ -51,12 +51,6 @@ function save_order($order) {
     }
     
     order_insert($email, $invoice_id, $complete_time, $status, $total_price, $item_count, json_encode($items));
-    /*
-        $date = new DateTime();
-        $date->setTimestamp($timestamp);
-        $date->setTimezone(new DateTimeZone('Asia/Hong_Kong'));
-        $formatted_date = $date->format('Y-m-d H:i:s');
-     */
     
     /* ========== REGION END ========== */
 }

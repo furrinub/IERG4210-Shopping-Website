@@ -9,4 +9,3 @@ layout: default
 </div>
 
 <script defer src="js/paypal_button.js"></script>
-
